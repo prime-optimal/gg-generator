@@ -1,0 +1,5 @@
+[tools]
+hk = "latest"
+uv = "latest"
+# Python is intentionally NOT pinned here — uv owns it via .python-version
+# (avoids mise's python-build-standalone extract bug on 3.14 builds).
