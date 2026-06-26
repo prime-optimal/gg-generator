@@ -36,6 +36,7 @@ class MailBackend(str, Enum):
     guerrilla = "guerrilla"
     forward = "forward"
 
+
 app = typer.Typer(
     help="gg — generate a gamertag + identity bound to a disposable or forwarding email.",
     no_args_is_help=True,
@@ -65,9 +66,7 @@ def new(
     domain: str = typer.Option(
         DEFAULT_FORWARD_DOMAIN, "--domain", help="Catch-all domain for --mail forward."
     ),
-    save_op: bool = typer.Option(
-        False, "--op/--no-op", help="Also save the profile to 1Password."
-    ),
+    save_op: bool = typer.Option(False, "--op/--no-op", help="Also save the profile to 1Password."),
     vault: str = typer.Option(DEFAULT_VAULT, "--vault", help="1Password vault for --op."),
     profiles_dir: Path = _ProfilesDir,
 ) -> None:

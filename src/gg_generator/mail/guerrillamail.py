@@ -36,9 +36,7 @@ class GuerrillaMailClient:
     ) -> None:
         self.sid_token = sid_token
         self._owns_client = client is None
-        self._client = client or httpx.Client(
-            timeout=_TIMEOUT, headers={"User-Agent": USER_AGENT}
-        )
+        self._client = client or httpx.Client(timeout=_TIMEOUT, headers={"User-Agent": USER_AGENT})
 
     # -- public API ---------------------------------------------------------
 

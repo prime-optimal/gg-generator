@@ -29,9 +29,7 @@ class _Client:
 
 _PAYLOAD = {
     "post code": "90210",
-    "places": [
-        {"place name": "Beverly Hills", "state": "California", "state abbreviation": "CA"}
-    ],
+    "places": [{"place name": "Beverly Hills", "state": "California", "state abbreviation": "CA"}],
 }
 
 

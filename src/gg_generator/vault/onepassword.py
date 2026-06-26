@@ -64,7 +64,9 @@ def build_create_args(profile: Profile, vault: str = DEFAULT_VAULT) -> list[str]
         fields.append(f"guerrilla_sid_token[password]={profile.mailbox.sid_token}")
 
     return [
-        "op", "item", "create",
+        "op",
+        "item",
+        "create",
         "--category=login",
         f"--vault={vault}",
         f"--title={profile.gamertag}",
