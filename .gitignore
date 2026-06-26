@@ -6,6 +6,8 @@ __pycache__/
 dist/
 build/
 *.egg-info/
+*.spec
 
 # Generated throwaway accounts — never commit
 profiles/
+profiles.csv

@@ -11,7 +11,23 @@ run *args:
 
 # Generate a new profile
 new *args:
-    uv run gg new {{args}}
+    uv run gg new {{args}} --mail forward --state CA --op
+
+# Export all profiles to CSV (e.g. `just export -o out.csv`)
+export *args:
+    uv run gg export {{args}}
+
+# Build a standalone `gg` binary into ./dist (no Python needed to run it)
+build:
+    uv run pyinstaller --onefile --name gg --clean --noconfirm \
+        --collect-all faker \
+        src/gg_generator/__main__.py
+
+# Build + install the binary to ~/.local/bin
+install: build
+    install -d ~/.local/bin
+    install -m 0755 dist/gg ~/.local/bin/gg
+    @echo "installed → ~/.local/bin/gg"
 
 # Lint
 lint:

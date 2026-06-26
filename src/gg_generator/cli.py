@@ -12,6 +12,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
+from gg_generator.core.export import profiles_to_csv
 from gg_generator.core.models import Profile
 from gg_generator.core.store import DEFAULT_DIR, ProfileStore
 from gg_generator.identity.builder import build_identity
@@ -124,6 +125,29 @@ def list_profiles(profiles_dir: Path = _ProfilesDir) -> None:
     for p in profiles:
         table.add_row(p.gamertag, p.mailbox.email, p.identity.full_name, p.created_at)
     console.print(table)
+
+
+@app.command()
+def export(
+    output: Path = typer.Option(
+        Path("profiles.csv"), "--output", "-o", help="CSV file to write (use '-' for stdout)."
+    ),
+    profiles_dir: Path = _ProfilesDir,
+) -> None:
+    """Export all profiles to a CSV — one row per profile, columns flattened from the JSON."""
+    profiles = ProfileStore(profiles_dir).list_profiles()
+    if not profiles:
+        console.print("[yellow]No profiles to export — run [bold]gg new[/].[/]")
+        raise typer.Exit()
+
+    csv_text = profiles_to_csv(profiles)
+    if str(output) == "-":
+        # markup=False: CSV cells may contain '[...]' that Rich would treat as markup.
+        console.print(csv_text, markup=False, end="")
+        return
+
+    output.write_text(csv_text)
+    console.print(f"[green]Exported {len(profiles)} profile(s) →[/] {output}")
 
 
 @app.command()

@@ -24,13 +24,14 @@ packages = ["src/gg_generator"]
 
 [dependency-groups]
 dev = [
+    "pyinstaller>=6.21.0",
     "pytest>=8.2",
     "ruff>=0.5",
 ]
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
