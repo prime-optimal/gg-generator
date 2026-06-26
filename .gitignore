@@ -11,3 +11,6 @@ build/
 # Generated throwaway accounts — never commit
 profiles/
 profiles.csv
+
+# Local fnox config holds the real 1Password vault id — keep the example only
+fnox.toml

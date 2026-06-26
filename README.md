@@ -90,20 +90,19 @@ gg push <gamertag> --vault "Game Accounts"   # explicit, per-invocation
 export GG_OP_VAULT="Game Accounts"           # or set once for the shell/session
 ```
 
-**With fnox.** Keep the vault id (and any `op` service-account token) out of the
-repo by sourcing them through [fnox](https://github.com/jdx/fnox) + 1Password.
-Add an `op://` reference in the project's committable `fnox.toml`, then let fnox
-inject `GG_OP_VAULT` into the environment at run time — so the binding lives in
-1Password, not in source:
+**With fnox.** Keep the vault id out of the repo by sourcing it through
+[fnox](https://github.com/jdx/fnox). Copy `fnox.toml.example` to `fnox.toml`
+(git-ignored) and set `GG_OP_VAULT` — either a literal vault name/uuid kept
+local, or an `op://` reference so not even the id lives in the file:
 
 ```toml
-# fnox.toml
-[env]
-GG_OP_VAULT = "op://Developer/gg-generator/vault-id"
+# fnox.toml  (git-ignored)
+[secrets]
+GG_OP_VAULT = "op://Developer/gg-generator/vault_id"
 ```
 
 ```bash
-fnox run -- gg push <gamertag>   # GG_OP_VAULT resolved from 1Password
+fnox exec -- gg push <gamertag>   # GG_OP_VAULT injected from fnox / 1Password
 ```
 
 Profiles persist to `./profiles/<gamertag>.json` (git-ignored). Each stores the

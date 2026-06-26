@@ -1,0 +1,15 @@
+# Copy to `fnox.toml` (git-ignored) and point GG_OP_VAULT at your 1Password vault.
+# `gg` resolves the target vault as: --vault flag → GG_OP_VAULT → a vault named "Developer".
+#
+# Option A — a literal vault name or uuid stored locally:
+#   [secrets]
+#   GG_OP_VAULT = "Developer"
+#
+# Option B (recommended) — a 1Password reference, so not even the id lives in the
+# file; fnox resolves it at run time via the `op` CLI / service account:
+[secrets]
+GG_OP_VAULT = "op://Developer/gg-generator/vault_id"
+
+# Then run gg with the vault injected:
+#   fnox exec -- gg push <gamertag>
+#   fnox exec -- gg new --op
