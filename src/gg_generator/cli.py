@@ -25,7 +25,7 @@ from gg_generator.mail.providers import (
 )
 from gg_generator.passwords import MIN_LENGTH, generate_password
 from gg_generator.vault.onepassword import (
-    DEVELOPER_VAULT,
+    DEFAULT_VAULT,
     OnePasswordError,
     create_login,
     op_available,
@@ -68,7 +68,7 @@ def new(
     save_op: bool = typer.Option(
         False, "--op/--no-op", help="Also save the profile to 1Password."
     ),
-    vault: str = typer.Option(DEVELOPER_VAULT, "--vault", help="1Password vault for --op."),
+    vault: str = typer.Option(DEFAULT_VAULT, "--vault", help="1Password vault for --op."),
     profiles_dir: Path = _ProfilesDir,
 ) -> None:
     """Generate an identity + gamertag bound to an email address."""
@@ -223,7 +223,7 @@ def read(
 @app.command()
 def push(
     key: str = typer.Argument(..., help="Gamertag or email address."),
-    vault: str = typer.Option(DEVELOPER_VAULT, "--vault", help="1Password vault id/name."),
+    vault: str = typer.Option(DEFAULT_VAULT, "--vault", help="1Password vault id/name."),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Print the `op` command instead of running it."
     ),

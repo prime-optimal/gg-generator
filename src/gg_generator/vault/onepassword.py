@@ -8,14 +8,17 @@ without touching a live vault.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 from collections.abc import Callable
 
 from gg_generator.core.models import Profile
 
-# Developer vault.
-DEVELOPER_VAULT = "REDACTED-VAULT-ID"
+# Target vault for new Login items. `op` resolves either a vault name or id, so
+# set GG_OP_VAULT to your vault's name/uuid (e.g. via fnox/your shell), or pass
+# --vault per invocation. Defaults to a vault literally named "Developer".
+DEFAULT_VAULT = os.environ.get("GG_OP_VAULT", "Developer")
 
 # PlayStation/PSN sign-in. 1Password matches autofill on host, so the bare host
 # covers both the PlayStation app and the browser sign-in page.
@@ -32,7 +35,7 @@ def op_available() -> bool:
     return shutil.which("op") is not None
 
 
-def build_create_args(profile: Profile, vault: str = DEVELOPER_VAULT) -> list[str]:
+def build_create_args(profile: Profile, vault: str = DEFAULT_VAULT) -> list[str]:
     """Assemble the `op item create` argv for a profile (a Login item)."""
     ident = profile.identity
     addr = ident.address
@@ -74,7 +77,7 @@ def build_create_args(profile: Profile, vault: str = DEVELOPER_VAULT) -> list[st
 
 def create_login(
     profile: Profile,
-    vault: str = DEVELOPER_VAULT,
+    vault: str = DEFAULT_VAULT,
     *,
     runner: Runner = subprocess.run,
     dry_run: bool = False,

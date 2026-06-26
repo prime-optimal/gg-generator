@@ -65,13 +65,46 @@ the same throwaway-account data as `profiles/`, so it's git-ignored.
 
 ### 1Password
 
-`--op` / `gg push` create a Login item via the `op` CLI in the Developer vault
-(`REDACTED-VAULT-ID`). The item's **`username` is the email** (sites
-autofill the email at sign-in), with the **gamertag in its own field**, plus
-password, email, mail backend, full name, DOB, phone, and address (city, state,
-ZIP). The item URL is the PSN sign-in host (`my.account.sony.com`) so 1Password
-autofills both the PlayStation app and the browser. Requires a signed-in `op`;
-use `--dry-run` to preview the command.
+`--op` / `gg push` create a Login item via the `op` CLI. The item's **`username`
+is the email** (sites autofill the email at sign-in), with the **gamertag in its
+own field**, plus password, email, mail backend, full name, DOB, phone, and
+address (city, state, ZIP). The item URL is the PSN sign-in host
+(`my.account.sony.com`) so 1Password autofills both the PlayStation app and the
+browser. Use `--dry-run` to preview the exact `op item create` command without
+running it.
+
+**Connecting `op`.** Install the [1Password CLI](https://developer.1password.com/docs/cli/)
+and sign in so `op` has a session:
+
+```bash
+op signin                      # interactive, or use a service-account token
+op vault list                  # find the vault name/uuid you want to write to
+```
+
+**Choosing the vault.** No vault is hardcoded. Resolution order is `--vault`
+flag → `GG_OP_VAULT` env var → a vault literally named `Developer`. `op` accepts
+either a vault name or its uuid:
+
+```bash
+gg push <gamertag> --vault "Game Accounts"   # explicit, per-invocation
+export GG_OP_VAULT="Game Accounts"           # or set once for the shell/session
+```
+
+**With fnox.** Keep the vault id (and any `op` service-account token) out of the
+repo by sourcing them through [fnox](https://github.com/jdx/fnox) + 1Password.
+Add an `op://` reference in the project's committable `fnox.toml`, then let fnox
+inject `GG_OP_VAULT` into the environment at run time — so the binding lives in
+1Password, not in source:
+
+```toml
+# fnox.toml
+[env]
+GG_OP_VAULT = "op://Developer/gg-generator/vault-id"
+```
+
+```bash
+fnox run -- gg push <gamertag>   # GG_OP_VAULT resolved from 1Password
+```
 
 Profiles persist to `./profiles/<gamertag>.json` (git-ignored). Each stores the
 GuerrillaMail `sid_token`, so `inbox`/`read` keep working in later runs.

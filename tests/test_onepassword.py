@@ -4,7 +4,7 @@ import pytest
 
 from gg_generator.core.models import Address, Identity, Mailbox, Profile
 from gg_generator.vault.onepassword import (
-    DEVELOPER_VAULT,
+    DEFAULT_VAULT,
     PSN_SIGNIN_URL,
     OnePasswordError,
     build_create_args,
@@ -41,7 +41,7 @@ def test_build_args_has_core_fields():
     args = build_create_args(_profile())
     assert args[:3] == ["op", "item", "create"]
     assert "--category=login" in args
-    assert f"--vault={DEVELOPER_VAULT}" in args
+    assert f"--vault={DEFAULT_VAULT}" in args
     assert "--title=redpanda123" in args
     # username is the email so 1Password autofills it at sign-in
     assert "username=redpanda123@braindeadfgc.lol" in args
