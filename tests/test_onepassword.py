@@ -5,6 +5,7 @@ import pytest
 from gg_generator.core.models import Address, Identity, Mailbox, Profile
 from gg_generator.vault.onepassword import (
     DEVELOPER_VAULT,
+    PSN_SIGNIN_URL,
     OnePasswordError,
     build_create_args,
     create_login,
@@ -42,10 +43,15 @@ def test_build_args_has_core_fields():
     assert "--category=login" in args
     assert f"--vault={DEVELOPER_VAULT}" in args
     assert "--title=redpanda123" in args
-    assert "username=redpanda123" in args
+    # username is the email so 1Password autofills it at sign-in
+    assert "username=redpanda123@braindeadfgc.lol" in args
+    assert "gamertag[text]=redpanda123" in args
     assert "password=TONs3kPC" in args
     assert "email[text]=redpanda123@braindeadfgc.lol" in args
     assert "address[text]=1 Main St, Austin, TX 77001" in args
+    assert "city[text]=Austin" in args
+    assert "state[text]=TX" in args
+    assert f"--url={PSN_SIGNIN_URL}" in args
 
 
 def test_no_sid_field_for_forward_backend():

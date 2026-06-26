@@ -17,6 +17,10 @@ from gg_generator.core.models import Profile
 # Developer vault.
 DEVELOPER_VAULT = "REDACTED-VAULT-ID"
 
+# PlayStation/PSN sign-in. 1Password matches autofill on host, so the bare host
+# covers both the PlayStation app and the browser sign-in page.
+PSN_SIGNIN_URL = "https://my.account.sony.com"
+
 Runner = Callable[..., "subprocess.CompletedProcess[str]"]
 
 
@@ -34,8 +38,11 @@ def build_create_args(profile: Profile, vault: str = DEVELOPER_VAULT) -> list[st
     addr = ident.address
 
     fields = [
-        f"username={profile.gamertag}",
+        # 1Password autofills `username` at sign-in — sites use the email, so this
+        # must be the email. The gamertag lives in its own field below.
+        f"username={profile.mailbox.email}",
         f"password={profile.password}",
+        f"gamertag[text]={profile.gamertag}",
         f"email[text]={profile.mailbox.email}",
         f"mail_backend[text]={profile.mailbox.provider}",
         f"full_name[text]={ident.full_name}",
@@ -46,6 +53,7 @@ def build_create_args(profile: Profile, vault: str = DEVELOPER_VAULT) -> list[st
     if addr:
         fields += [
             f"address[text]={addr.one_line}",
+            f"city[text]={addr.city}",
             f"state[text]={addr.state_abbr}",
             f"zip[text]={addr.zip}",
         ]
@@ -57,6 +65,7 @@ def build_create_args(profile: Profile, vault: str = DEVELOPER_VAULT) -> list[st
         "--category=login",
         f"--vault={vault}",
         f"--title={profile.gamertag}",
+        f"--url={PSN_SIGNIN_URL}",
         "--tags=gg-generator",
         "--format=json",
         *fields,

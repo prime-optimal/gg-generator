@@ -32,7 +32,7 @@ def build_identity(
         ValueError: on an unknown state or an empty birth-year range.
     """
     person = randomuser.fetch_person(gender=gender, client=client)
-    address = generate_address(state)
+    address = generate_address(state, client=client)
     dob, age = generate_dob(min_year, max_year)
 
     return Identity(
