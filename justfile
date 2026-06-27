@@ -29,6 +29,14 @@ install: build
     install -m 0755 dist/gg ~/.local/bin/gg
     @echo "installed → ~/.local/bin/gg"
 
+# Preview the release for the current pyproject.toml version (changes nothing)
+release-dry:
+    uv run python scripts/release.py --dry-run
+
+# Cut a release for the current pyproject.toml version (bump it there first)
+release:
+    uv run python scripts/release.py
+
 # Lint
 lint:
     uv run ruff check .

@@ -13,9 +13,9 @@ permissions:
   contents: write
 
 jobs:
-  changelog:
+  release:
     runs-on: ubuntu-latest
-    # Skip changelogen's own release commits so this never loops. (Pushes made
+    # Skip the script's own release commits so this never loops. (Pushes made
     # with GITHUB_TOKEN also don't re-trigger workflows, so this is belt + braces.)
     if: ${{ !startsWith(github.event.head_commit.message, 'chore(release)') }}
     steps:
@@ -24,13 +24,16 @@ jobs:
           fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
+      - uses: astral-sh/setup-uv@v5
 
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Generate changelog, bump version, tag + push
-        run: bunx changelogen@latest --release --push
+      # Tags v<version> from pyproject.toml and updates the changelog only when the
+      # version was bumped; otherwise it's a no-op.
+      - name: Release (pyproject version → tag + changelog)
+        run: uv run python scripts/release.py
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
