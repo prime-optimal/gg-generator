@@ -153,3 +153,17 @@ just lint     # ruff check
 just fmt      # ruff format
 just check    # lint + format-check + tests
 ```
+
+## Releasing
+
+`pyproject.toml`'s `version` is the **single source of truth**. To cut a release:
+**bump `version` in `pyproject.toml`** and merge to `main`. The
+`changelog` workflow (`scripts/release.py`) then regenerates the `CHANGELOG.md`
+section for the new commit range, commits `chore(release): vX.Y.Z`, tags it, and
+publishes a GitHub release. If the version isn't bumped, the workflow no-ops, so
+ordinary merges never cut a release.
+
+```bash
+just release-dry   # preview the section for the current version (changes nothing)
+just release       # cut it locally (CI does this for you on merge to main)
+```
